@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Search History</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <h1 class="text-center text-info">Your Search History</h1>
+
+        {% if searches %}
+            <div class="card shadow-sm p-4">
+                <ul class="list-group">
+                    {% for search in searches %}
+                        <li class="list-group-item">
+                            <strong>{{ search.city }}</strong> - 
+                            {{ search.temperature }}&deg;C, 
+                            {{ search.description }} 
+                            <span class="text-muted">({{ search.search_date }})</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <p class="text-center text-muted mt-3">No search history found.</p>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-info">Go back to Home</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
