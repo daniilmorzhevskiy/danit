@@ -1,0 +1,62 @@
+[
+    {
+        "id": 1,
+        "question": "What is the most common reason people talk to themselves?",
+        "options": ["They are geniuses", "They love the sound of their voice", "They need expert advice", "They forgot how to text"],
+        "answer": "They need expert advice"
+    },
+    {
+        "id": 2,
+        "question": "Which of these animals is most likely plotting world domination?",
+        "options": ["Goldfish", "Dog", "Cat", "Sloth"],
+        "answer": "Cat"
+    },
+    {
+        "id": 3,
+        "question": "What should you never do when meeting an alien?",
+        "options": ["Ask for WiFi password", "Give them a hug", "Challenge them to karaoke", "Ask them to take you to their leader"],
+        "answer": "Ask for WiFi password"
+    },
+    {
+        "id": 4,
+        "question": "What is the most important rule of eating spaghetti?",
+        "options": ["Use a fork", "Slurp loudly for respect", "Twirl it neatly", "Wear a raincoat"],
+        "answer": "Wear a raincoat"
+    },
+    {
+        "id": 5,
+        "question": "What is the best way to avoid being late?",
+        "options": ["Time travel", "Wake up earlier", "Run really fast", "Bribe the clock"],
+        "answer": "Time travel"
+    },
+    {
+        "id": 6,
+        "question": "If a zombie apocalypse happens, what should you do first?",
+        "options": ["Scream", "Stock up on snacks", "Befriend a zombie", "Learn how to moonwalk away"],
+        "answer": "Stock up on snacks"
+    },
+    {
+        "id": 7,
+        "question": "What is the official sound of someone stepping on LEGO?",
+        "options": ["Ouch!", "NOOOO!", "Why me?!", "All of the above"],
+        "answer": "All of the above"
+    },
+    {
+        "id": 8,
+        "question": "What is the best way to deal with a bad hair day?",
+        "options": ["Wear a hat", "Move to a windy city", "Pretend it’s a fashion statement", "Start a new hairstyle trend"],
+        "answer": "Pretend it’s a fashion statement"
+    },
+    {
+        "id": 9,
+        "question": "Which of these is NOT a real job?",
+        "options": ["Professional sleeper", "Duck fashion designer", "Chocolate taster", "Invisible paint tester"],
+        "answer": "Invisible paint tester"
+    },
+    {
+        "id": 10,
+        "question": "What is the first rule of being a ninja?",
+        "options": ["Always wear black", "Move silently", "Don’t talk about being a ninja", "Have a cool mask"],
+        "answer": "Don’t talk about being a ninja"
+    }
+]
