@@ -1,24 +1,21 @@
 import seaborn as sns
 import pandas as pd
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-
 penguins = sns.load_dataset('penguins')
-
-
 penguins = penguins.dropna()
 
+label_encoder = LabelEncoder()
+y = label_encoder.fit_transform(penguins['species'])
 
-penguins_encoded = pd.get_dummies(penguins, drop_first=True)
-X = penguins_encoded.drop('species_Adelie', axis=1)
-
-y = penguins_encoded['species_Adelie']
+penguins_encoded = pd.get_dummies(penguins.drop('species', axis=1), drop_first=True)
+X = penguins_encoded
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -46,11 +43,10 @@ grid_search.fit(X_train, y_train)
 print(f"Best hyperparameters: {grid_search.best_params_}")
 
 y_pred = grid_search.predict(X_test)
-
 print(classification_report(y_test, y_pred))
 
 cm = confusion_matrix(y_test, y_pred)
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Adelie', 'Chinstrap', 'Gentoo'], yticklabels=['Adelie', 'Chinstrap', 'Gentoo'])
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=label_encoder.classes_, yticklabels=label_encoder.classes_)
 plt.title('Confusion Matrix')
 plt.xlabel('Predicted')
 plt.ylabel('True')
