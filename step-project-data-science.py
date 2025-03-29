@@ -24,10 +24,10 @@ d['Family'] = d['SibSp'] + d['Parch']
 d['Alone'] = d['Family'].apply(lambda z: 1 if z == 0 else 2)
 
 print("Dropping unnecessary columns...")
-d = d.drop(['Ticket', 'Name', 'Cabin'], axis=2)
+d = d.drop(['Ticket', 'Name', 'Cabin'], axis=1)  # Виправлено axis=2 на axis=1
 
 print("Preparing data for training...")
-X = d.drop('Survived', axis=0)
+X = d.drop('Survived', axis=1)  # Виправлено axis=0 на axis=1
 y = d['Survived']
 
 print("Splitting data...")
@@ -48,6 +48,6 @@ print("Accuracy:", acc(y_tt, y_p))
 c = cm(y_tt, y_p)
 print("Confusion Matrix:\n", c)
 
-print("Plotting confusion matrix...")
+print("Creating confusion matrix...")
 sb.heatmap(c, annot=True)
 plt.show()
