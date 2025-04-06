@@ -1,53 +1,113 @@
-import pandas as p
-import seaborn as sb
+import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split as tts
-from sklearn.linear_model import LogisticRegression as lr
-from sklearn.metrics import accuracy_score as acc, confusion_matrix as cm
 
+from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# 1. Завантаження даних
 print("Loading data...")
-u = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
-d = p.read_csv(u)
-print("Data loaded!\n", d.head())
+url = "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
+df = pd.read_csv(url)
 
-print("Handling missing values...")
-d['Age'] = d['Age'].fillna(d['Age'].mean())
+# 2. Попередній огляд
+print(df.head())
 
-print("Encoding categorical features...")
-d['Sex'] = d['Sex'].map({'male': 1, 'female': 0, 'other': 2})
-d['Embarked'] = d['Embarked'].map({'S': 0, 'C': 1})
-d = p.get_dummies(d, columns=['Embarked'])
-print("Encoding done!")
+# 3. Заповнення пропущених значень
+df['Age'] = df['Age'].fillna(df['Age'].median())
+df['Embarked'] = df['Embarked'].fillna(df['Embarked'].mode()[0])
 
-print("Feature engineering...")
-d['Family'] = d['SibSp'] + d['Parch']
-d['Alone'] = d['Family'].apply(lambda z: 1 if z == 0 else 2)
+# 4. Інженерія ознак
+df['FamilySize'] = df['SibSp'] + df['Parch'] + 1
+df['IsAlone'] = (df['FamilySize'] == 1).astype(int)
+df['Title'] = df['Name'].str.extract(' ([A-Za-z]+)\.', expand=False)
+df['Title'] = df['Title'].replace(['Lady', 'Countess','Capt', 'Col', 'Don', 'Dr', 'Major',
+                                   'Rev', 'Sir', 'Jonkheer', 'Dona'], 'Rare')
+df['Title'] = df['Title'].replace(['Mlle', 'Ms'], 'Miss')
+df['Title'] = df['Title'].replace('Mme', 'Mrs')
 
-print("Dropping unnecessary columns...")
-d = d.drop(['Ticket', 'Name', 'Cabin'], axis=1)  # Виправлено axis=2 на axis=1
+# 5. Кодування категоріальних змінних
+df['Sex'] = df['Sex'].map({'male': 1, 'female': 0})
+df = pd.get_dummies(df, columns=['Embarked', 'Title'], drop_first=True)
 
-print("Preparing data for training...")
-X = d.drop('Survived', axis=1)  # Виправлено axis=0 на axis=1
-y = d['Survived']
+# 6. Видалення непотрібних стовпців
+df = df.drop(['Ticket', 'Cabin', 'Name', 'PassengerId'], axis=1)
 
-print("Splitting data...")
-X_t, X_tt, y_t, y_tt = tts(X, y, test_size=0.2, random_state=42)
-print("Data split done!")
-
-print("Training model...")
-m = lr()
-m.fit(X_t, y_t)
-print("Model trained!")
-
-print("Making predictions...")
-y_p = m.predict(X_tt)
-
-print("Evaluating model...")
-print("Accuracy:", acc(y_tt, y_p))
-
-c = cm(y_tt, y_p)
-print("Confusion Matrix:\n", c)
-
-print("Creating confusion matrix...")
-sb.heatmap(c, annot=True)
+# 7. Візуалізація (EDA)
+sns.countplot(x='Survived', data=df)
+plt.title('Розподіл виживших')
 plt.show()
+
+sns.countplot(x='Pclass', hue='Survived', data=df)
+plt.title('Виживання за класом')
+plt.show()
+
+sns.countplot(x='Sex', hue='Survived', data=df)
+plt.title('Виживання за статтю')
+plt.show()
+
+sns.histplot(data=df, x='Age', hue='Survived', bins=30, kde=True)
+plt.title('Виживання за віком')
+plt.show()
+
+sns.boxplot(x='Survived', y='Fare', data=df)
+plt.title('Виживання за вартістю квитка')
+plt.show()
+
+# 8. Кореляційна матриця
+plt.figure(figsize=(10, 8))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+plt.title("Матриця кореляцій")
+plt.show()
+
+# 9. Підготовка даних
+X = df.drop('Survived', axis=1)
+y = df['Survived']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 10. Модель 1 — Логістична регресія
+logreg = LogisticRegression(max_iter=1000)
+logreg.fit(X_train, y_train)
+y_pred1 = logreg.predict(X_test)
+
+print("\n=== Logistic Regression ===")
+print("Accuracy:", accuracy_score(y_test, y_pred1))
+print("Classification Report:\n", classification_report(y_test, y_pred1))
+
+# 11. Модель 2 — Випадковий ліс
+rf = RandomForestClassifier(random_state=42)
+rf.fit(X_train, y_train)
+y_pred2 = rf.predict(X_test)
+
+print("\n=== Random Forest ===")
+print("Accuracy:", accuracy_score(y_test, y_pred2))
+print("Classification Report:\n", classification_report(y_test, y_pred2))
+
+# 12. Матриця помилок
+conf = confusion_matrix(y_test, y_pred2)
+sns.heatmap(conf, annot=True, fmt='d')
+plt.title("Confusion Matrix - Random Forest")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+# 13. Крос-валідація
+cv_scores_logreg = cross_val_score(logreg, X, y, cv=5)
+cv_scores_rf = cross_val_score(rf, X, y, cv=5)
+
+print("\nCross-validation (Logistic Regression):", cv_scores_logreg.mean())
+print("Cross-validation (Random Forest):", cv_scores_rf.mean())
+
+# 14. Підбір гіперпараметрів для Random Forest
+param_grid = {
+    'n_estimators': [50, 100],
+    'max_depth': [4, 6, 8],
+}
+grid = GridSearchCV(RandomForestClassifier(random_state=42), param_grid, cv=5)
+grid.fit(X_train, y_train)
+
+print("\nBest Parameters (Random Forest):", grid.best_params_)
+best_rf = grid.best_estimator_
+print("Test Accuracy (Best RF):", accuracy_score(y_test, best_rf.predict(X_test)))
