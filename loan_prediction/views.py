@@ -4,6 +4,7 @@ import pandas as pd
 import joblib
 from django.shortcuts import render
 import requests
+from django.shortcuts import redirect, render
 
 model = joblib.load('loan_model.pkl')
 
@@ -38,3 +39,7 @@ def predict_form(request):
             prediction = 'Одобрено' if data['prediction'] == 1 else 'Отказано'
     return render(request, 'loan_prediction/form.html', {'prediction': prediction})
 
+
+
+def home(request):
+    return render(request, 'home.html')
