@@ -1,3 +1,4 @@
+
 # Прогнозування Кредитоспроможності
 
 ## Опис проекту
@@ -24,7 +25,13 @@ loan_project/
 │   └── settings.py, urls.py, etc.
 ├── manage.py, etc.
 ├── loan_data.csv
-└── loan_model.pkl
+├── loan_model.pkl
+└── visualizations/
+    ├── feature_importance.png
+    ├── loan_status_by_education.png
+    ├── applicant_income_vs_loan_status.png
+    ├── correlation_heatmap.png
+    └── <other visualizations>.png
 ```
 
 ---
@@ -49,7 +56,7 @@ loan_project/
 
 - Алгоритм: RandomForestClassifier
 - Інструменти: Pipeline, ColumnTransformer, GridSearchCV
-- Збереження моделі у файл `model.pkl`
+- Збереження моделі у файл `loan_model.pkl`
 
 ---
 
@@ -92,6 +99,14 @@ curl "http://127.0.0.1:8000/api/predict/?Gender=Male&Married=Yes&Dependents=0&Ed
 - Гістограми розподілу доходів заявника
 - Кореляційна матриця теплової карти
 - Розподіл статусу кредиту за категоріями
+- Важливість ознак у моделі RandomForest
+
+### Візуалізації будуть збережені в папці `visualizations`:
+- `feature_importance.png`
+- `loan_status_by_education.png`
+- `applicant_income_vs_loan_status.png`
+- `correlation_heatmap.png`
+- та інші
 
 ---
 
@@ -132,5 +147,4 @@ python manage.py runserver
 
 by D. Morzhevskyi
 
-Проект створено в рамках навчального курсу з Data Science DanIT
-
+Проект створено в рамках навчального курсу з Python DanIT
