@@ -6,6 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import GridSearchCV
 
+check
+
 # Загрузка данных
 df = pd.read_csv("loan_data.csv")
 
